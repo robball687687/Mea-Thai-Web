@@ -1,0 +1,63 @@
+[
+    {
+      "category": "Appetizers",
+      "items": [
+        {
+          "name": "Spring Rolls",
+          "price": "$6",
+          "image": "/images/tempimage.png"
+        },
+        {
+          "name": "Chicken Satay",
+          "price": "$7",
+          "image": "/images/tempimage.png"
+        }
+      ]
+    },
+    {
+      "category": "Noodles",
+      "items": [
+        {
+          "name": "Pad Thai",
+          "price": "$12",
+          "image": "/images/tempimage.png"
+        },
+        {
+          "name": "Pad See Ew",
+          "price": "$12",
+          "image": "/images/tempimage.png"
+        }
+      ]
+    },
+    {
+      "category": "Curries",
+      "items": [
+        {
+          "name": "Green Curry",
+          "price": "$13",
+          "image": "/images/tempimage.png"
+        },
+        {
+          "name": "Panang Curry",
+          "price": "$14",
+          "image": "/images/tempimage.png"
+        }
+      ]
+    },
+    {
+      "category": "Drinks",
+      "items": [
+        {
+          "name": "Thai Iced Tea",
+          "price": "$4",
+          "image": "/images/tempimage.png"
+        },
+        {
+          "name": "Coconut Water",
+          "price": "$3.50",
+          "image": "/images/tempimage.png"
+        }
+      ]
+    }
+  ]
+  
