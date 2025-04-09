@@ -26,7 +26,7 @@ function App() {
                 name: m.item.itemName,
                 price: `$${m.item.itemPrice.toFixed(2)}`,
                 description: m.item.itemDesc,
-                image: 'https://www.themeathaicuisine.com/assets/img/mea/MeaLogoBlackTrans.png',
+                image: m.item.itemImage,
               })),
           }));
 
@@ -209,7 +209,7 @@ function App() {
                       src={item.image}
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "/images/placeholder.jpg";
+                        e.target.src = "https://www.themeathaicuisine.com/assets/img/mea/MeaLogoBlackTrans.png";
                       }}
                       alt={item.name}
                       className="w-full h-48 object-cover"
