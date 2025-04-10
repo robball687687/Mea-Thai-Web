@@ -8,7 +8,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [orderLink, setOrderLink] = useState("https://the-mea-thai-cuisine-llc.square.site/"); // fallback
-
+  const [loading, setLoading] = useState(true); // add this
 
   useEffect(() => {
     axios
@@ -32,6 +32,7 @@ function App() {
 
         setMenuData(structuredMenu);
         if (structuredMenu.length) setActiveCategory(structuredMenu[0].category);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load WebMenu:", err);
@@ -183,68 +184,78 @@ function App() {
         )}
 
         <div className="space-y-12">
-          {(isMobile
-            ? menuData
-            : menuData.filter((section) => section.category === activeCategory)
-          ).map((section, i) => (
-            <div key={i}>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="relative mb-10"
-              >
-                <div className="flex items-center justify-center">
-                  <span className="text-3xl font-extrabold text-red-600 border-b-4 border-red-500 px-6 pb-1 uppercase tracking-widest bg-white z-10 relative">
-                    {section.category}
-                  </span>
-                </div>
-                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-red-200 z-0" />
-              </motion.div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {section.items.map((item, index) => (
-                  <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <img
-                      src={item.image}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://www.themeathaicuisine.com/assets/img/mea/MeaLogoBlackTrans.png";
-                      }}
-                      alt={item.name}
-                      className="w-full h-48 object-cover"
-                    />
-                    <div className="p-4">
-                      <h4 className="text-xl font-semibold">{item.name}</h4>
-                      <p className="text-gray-600">{item.description}</p>                      
-                    </div>
-                  </div>
-                ))}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : 
+        (isMobile
+          ? menuData
+          : menuData.filter((section) => section.category === activeCategory)
+        ).map((section, i) => (
+          <div key={i}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="relative mb-10"
+            >
+              <div className="flex items-center justify-center">
+                <span className="text-3xl font-extrabold text-red-600 border-b-4 border-red-500 px-6 pb-1 uppercase tracking-widest bg-white z-10 relative">
+                  {section.category}
+                </span>
               </div>
+              <div className="absolute top-1/2 left-0 w-full h-0.5 bg-red-200 z-0" />
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {section.items.map((item, index) => (
+                <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <img
+                    src={item.image}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://www.themeathaicuisine.com/assets/img/mea/MeaLogoBlackTrans.png";
+                    }}
+                    alt={item.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-xl font-semibold">{item.name}</h4>
+                    <p className="text-gray-600">{item.description}</p>                      
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+        ))
+          }
+
+
+
+
+          
         </div>
       </div>
 
       {/* Special Section */}
       <section id="special" className="w-full max-w-4xl px-4 py-12 text-center">
-        <h2 className="text-3xl font-bold text-red-500 mb-4">Chef's Specials</h2>
+        <h2 className="text-3xl font-bold text-red-500 mb-4">Specials</h2>
         <p className="text-lg text-gray-800 mb-8">Explore our hand-picked signature dishes, crafted with seasonal ingredients and bold Thai flavors.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
             <img src="/images/mango-sticky-rice.jpg" alt="Mango Sticky Rice" className="w-full h-48 object-cover" />
             <div className="p-4">
-              <h3 className="text-xl font-semibold">Mango Sticky Rice</h3>
+              <h3 className="text-xl font-semibold">Crispy Pad Thai</h3>
               <p className="text-gray-700">Sweet coconut sticky rice topped with fresh mango slices.</p>
-              <p className="font-bold mt-2">$7</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
             <img src="/images/crispy-pork-basil.jpg" alt="Crispy Pork Basil" className="w-full h-48 object-cover" />
             <div className="p-4">
-              <h3 className="text-xl font-semibold">Crispy Pork with Basil</h3>
-              <p className="text-gray-700">Crispy pork belly stir-fried with Thai basil and chili.</p>
-              <p className="font-bold mt-2">$14</p>
+              <h3 className="text-xl font-semibold">Yellow Curry</h3>
+              <p className="text-gray-700">Authentic Thai Yellow Curry. A rich, creamy, and flavorful classic! Perfectly spiced with traditional Thai ingredients. Sorry chicken only!</p>
+              
             </div>
           </div>
         </div>
@@ -314,13 +325,13 @@ function App() {
     <h2 className="text-3xl font-bold text-red-500 mb-4">Trailer</h2>
 
     {/* Video */}
-    <video className="mx-auto w-full max-w-xl rounded-xl shadow mb-8" controls>
+    {/* <video className="mx-auto w-full max-w-xl rounded-xl shadow mb-8" controls>
       <source
         src="https://rmrstorage.blob.core.windows.net/videomeathai/1022637517-hd.mp4"
         type="video/mp4"
       />
       Your browser does not support the video tag.
-    </video>
+    </video> */}
 
     {/* Trailer Description */}
     <p className="text-lg text-gray-800 mb-6">
@@ -332,16 +343,16 @@ function App() {
     {/* Image Gallery */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <img
-        src="/images/trailer1.jpg"
+        src="https://rmrstorage.blob.core.windows.net/bb1/MeaTrailer2.jpg"
         alt="Food Trailer Side View"
         className="rounded-xl shadow object-cover w-full h-64"
       />
       <img
-        src="/images/trailer2.jpg"
+        src="https://rmrstorage.blob.core.windows.net/bb1/MeaTrailer1.jpg"
         alt="Food Trailer Serving Window"
         className="rounded-xl shadow object-cover w-full h-64"
       />
-      <img
+      {/* <img
         src="/images/trailer3.jpg"
         alt="Food Trailer at Event"
         className="rounded-xl shadow object-cover w-full h-64"
@@ -350,7 +361,7 @@ function App() {
         src="/images/trailer4.jpg"
         alt="Food Trailer Setup"
         className="rounded-xl shadow object-cover w-full h-64"
-      />
+      /> */}
     </div>
   </section>
 
