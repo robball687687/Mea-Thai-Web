@@ -9,6 +9,7 @@ function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [orderLink, setOrderLink] = useState("https://the-mea-thai-cuisine-llc.square.site/"); // fallback
   const [loading, setLoading] = useState(true); // add this
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     axios
@@ -78,15 +79,16 @@ function App() {
       {/* Top Navigation */}
       <header className="w-full bg-black bg-opacity-80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-5xl mx-auto flex justify-between items-center px-4 py-3">
+          {/* Logo */}
           <h1 className="text-xl font-bold text-white">The Mea Thai Cuisine</h1>
-          <nav className="flex gap-4 text-white text-sm md:text-base">
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex gap-4 text-white text-sm md:text-base">
             {["Delivery", "Menu", "Special", "FAQ", "Trailer", "About", "Contact"].map((section) => (
               <button
                 key={section}
                 onClick={() =>
-                  document
-                    .getElementById(section.toLowerCase())
-                    ?.scrollIntoView({ behavior: "smooth" })
+                  document.getElementById(section.toLowerCase())?.scrollIntoView({ behavior: "smooth" })
                 }
                 className="hover:text-red-400 transition"
               >
@@ -94,6 +96,8 @@ function App() {
               </button>
             ))}
           </nav>
+
+          {/* Desktop Order Button */}
           <a
             href={orderLink}
             target="_blank"
@@ -102,9 +106,56 @@ function App() {
           >
             Order Online
           </a>
-        </div>
-      </header>
 
+          {/* Mobile Hamburger */}
+          <button
+            className="md:hidden text-white"
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={mobileNavOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Nav Menu */}
+        {mobileNavOpen && (
+          <div className="md:hidden bg-black text-white flex flex-col items-center gap-2 py-4 transition-all duration-300 ease-in-out z-40">
+            {["Delivery", "Menu", "Special", "FAQ", "Trailer", "About", "Contact"].map((section) => (
+              <button
+                key={section}
+                onClick={() => {
+                  setMobileNavOpen(false);
+                  document.getElementById(section.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="text-lg py-2 hover:text-red-400"
+              >
+                {section}
+              </button>
+            ))}
+            <a
+              href={orderLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow hover:bg-red-700 transition"
+            >
+              Order Online
+            </a>
+          </div>
+        )}
+      </header>
+      
       {/* Hero Section */}
       <div className="relative w-full h-[75vh] overflow-hidden">
         <video
