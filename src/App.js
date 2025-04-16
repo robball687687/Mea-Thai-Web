@@ -295,14 +295,14 @@ function App() {
         <p className="text-lg text-gray-800 mb-8">Explore our hand-picked signature dishes, crafted with seasonal ingredients and bold Thai flavors.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
-            <img src="/images/mango-sticky-rice.jpg" alt="Mango Sticky Rice" className="w-full h-48 object-cover" />
+            <img src="https://rmrstorage.blob.core.windows.net/measite/CrispyPadThai.jpg" alt="Crispy Pad Thai" className="w-full h-48 object-cover" />
             <div className="p-4">
               <h3 className="text-xl font-semibold">Crispy Pad Thai</h3>
               <p className="text-gray-700">Sweet coconut sticky rice topped with fresh mango slices.</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
-            <img src="/images/crispy-pork-basil.jpg" alt="Crispy Pork Basil" className="w-full h-48 object-cover" />
+            <img src="https://rmrstorage.blob.core.windows.net/measite/YellowCurry.jpg" alt="Yellow Curry" className="w-full h-48 object-cover" />
             <div className="p-4">
               <h3 className="text-xl font-semibold">Yellow Curry</h3>
               <p className="text-gray-700">Authentic Thai Yellow Curry. A rich, creamy, and flavorful classic! Perfectly spiced with traditional Thai ingredients. Sorry chicken only!</p>
