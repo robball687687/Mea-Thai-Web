@@ -172,7 +172,7 @@ function App() {
         </video>
         <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center space-y-6">
           <motion.img
-            src="https://www.themeathaicuisine.com/assets/img/mea/MeaLogoBlackTrans.png"
+            src="https://rmrstorage.blob.core.windows.net/measite/MeaLogoBlackTrans.png"
             alt="Restaurant Logo"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -208,7 +208,7 @@ function App() {
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-red-500">Menu</h2>
           <a
-            href="https://www.themeathaicuisine.com/assets/img/menu/MeaMenu.pdf"
+            href="https://rmrstorage.blob.core.windows.net/measite/MeaMenu2025.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-red-600 text-white px-4 py-2 rounded-full shadow hover:bg-red-700 transition text-sm"
@@ -266,7 +266,7 @@ function App() {
                     src={item.image}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://www.themeathaicuisine.com/assets/img/mea/MeaLogoBlackTrans.png";
+                      e.target.src = "https://rmrstorage.blob.core.windows.net/measite/MeaLogoBlackTrans.png";
                     }}
                     alt={item.name}
                     className="w-full h-48 object-cover"
