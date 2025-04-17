@@ -298,7 +298,7 @@ function App() {
             <img src="https://rmrstorage.blob.core.windows.net/measite/CrispyPadThai.jpg" alt="Crispy Pad Thai" className="w-full h-48 object-cover" />
             <div className="p-4">
               <h3 className="text-xl font-semibold">Crispy Pad Thai</h3>
-              <p className="text-gray-700">Sweet coconut sticky rice topped with fresh mango slices.</p>
+              <p className="text-gray-700">A bold twist on the Thai classic! Our Crispy Pad Thai features golden-fried noodles tossed in a sweet and tangy tamarind sauce, with sautéed scallions, bean sprouts, and crushed peanuts for the perfect crunch. Topped with your choice of protein and a fresh lime wedge—every bite is a satisfying balance of crispy texture and rich, savory flavor.</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
