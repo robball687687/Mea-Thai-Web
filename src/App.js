@@ -43,12 +43,12 @@ function App() {
       axios
       .get("https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable")
       .then((res) => {
+
+
         const onlineLink = res.data;
-        console.log(res);
+        //console.log(res.data);
+        setOrderLink(onlineLink);
         
-        if (onlineLink?.value) {
-          setOrderLink(onlineLink);
-        }
       })
       .catch((err) => {
         console.error("Failed to fetch order link:", err);
