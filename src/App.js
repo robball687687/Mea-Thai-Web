@@ -10,6 +10,7 @@ function App() {
   const [orderLink, setOrderLink] = useState("https://the-mea-thai-cuisine-llc.square.site/"); // fallback
   const [loading, setLoading] = useState(true); // add this
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [isOrderingEnabled, setIsOrderingEnabled] = useState(true);
 
   useEffect(() => {
     axios
@@ -39,9 +40,25 @@ function App() {
         console.error("Failed to load WebMenu:", err);
       });
 
+      // fetch online ordering status
+      axios
+      .get("https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/value/Mea-Online-Ordering-Website-On-Off?name=Mea-Online-Ordering-Website-On-Off")
+      .then((res) => {
+        const rawValue = res.data?.toString().trim().toLowerCase();
+    
+        const isOff = rawValue === "off" || rawValue === "0" || rawValue === "false";
+    
+        //console.log("Ordering toggle value:", rawValue);
+        setIsOrderingEnabled(!isOff); // OFF means disabled
+      })
+      .catch((err) => {
+        console.error("Failed to fetch ordering toggle:", err);
+        setIsOrderingEnabled(true); // fallback to ON
+      });
+
       // fetch order link
       axios
-      .get("https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable")
+      .get("https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/link")
       .then((res) => {
 
 
@@ -98,14 +115,25 @@ function App() {
           </nav>
 
           {/* Desktop Order Button */}
-          <a
+          {/* <a
             href={orderLink}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden md:inline-block bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow hover:bg-red-700 transition"
           >
             Order Online
-          </a>
+          </a> */}
+
+          {isOrderingEnabled && (
+            <a
+              href={orderLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:inline-block bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow hover:bg-red-700 transition"
+            >
+              Order Online
+            </a>
+          )}
 
           {/* Mobile Hamburger */}
           <button
