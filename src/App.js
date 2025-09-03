@@ -7,7 +7,7 @@ function App() {
   const [activeCategory, setActiveCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [orderLink, setOrderLink] = useState("https://the-mea-thai-cuisine-llc.square.site/"); // fallback
+  const [orderLink, setOrderLink] = useState("https://polite-mud-02f9f1a0f.6.azurestaticapps.net"); // fallback
   const [loading, setLoading] = useState(true); // add this
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isOrderingEnabled, setIsOrderingEnabled] = useState(true);
