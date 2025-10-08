@@ -101,7 +101,7 @@ function App() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-4 text-white text-sm md:text-base">
-            {["Delivery", "Menu", "Special", "FAQ", "Trailer", "About", "Contact"].map((section) => (
+            {["Delivery", "Menu", "FAQ", "Trailer", "About", "Contact"].map((section) => (
               <button
                 key={section}
                 onClick={() =>
@@ -290,15 +290,24 @@ function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {section.items.map((item, index) => (
                 <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                  <img
-                    src={item.image}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "https://rmrstorage.blob.core.windows.net/measite/MeaLogoBlackTrans.png";
-                    }}
-                    alt={item.name}
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="relative bg-gray-50">
+  {/* Aspect ratio box: 4:3 looks nice for food; change to aspect-square if you prefer */}
+  <div className="aspect-[4/3] w-full overflow-hidden">
+    <img
+      src={item.image}
+      onError={(e) => {
+        e.currentTarget.onerror = null;
+        e.currentTarget.src = "https://rmrstorage.blob.core.windows.net/measite/MeaLogoBlackTrans.png";
+      }}
+      alt={item.name}
+      loading="lazy"
+      className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+    />
+  </div>
+
+  {/* Subtle rim to make white plates pop on light backgrounds */}
+  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-black/5" />
+</div>
                   <div className="p-4">
                     <h4 className="text-xl font-semibold">{item.name}</h4>
                     <p className="text-gray-600">{item.description}</p>                      
@@ -317,28 +326,7 @@ function App() {
         </div>
       </div>
 
-      {/* Special Section */}
-      <section id="special" className="w-full max-w-4xl px-4 py-12 text-center">
-        <h2 className="text-3xl font-bold text-red-500 mb-4">Specials</h2>
-        <p className="text-lg text-gray-800 mb-8">Explore our hand-picked signature dishes, crafted with seasonal ingredients and bold Thai flavors.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
-            <img src="https://rmrstorage.blob.core.windows.net/measite/CrispyPadThai.jpg" alt="Crispy Pad Thai" className="w-full h-48 object-cover" />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold">Crispy Pad Thai</h3>
-              <p className="text-gray-700">A bold twist on the Thai classic! Our Crispy Pad Thai features golden-fried noodles tossed in a sweet and tangy tamarind sauce, with sautéed scallions, bean sprouts, and crushed peanuts for the perfect crunch. Topped with your choice of protein and a fresh lime wedge—every bite is a satisfying balance of crispy texture and rich, savory flavor.</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-left">
-            <img src="https://rmrstorage.blob.core.windows.net/measite/YellowCurry.jpg" alt="Yellow Curry" className="w-full h-48 object-cover" />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold">Yellow Curry</h3>
-              <p className="text-gray-700">Authentic Thai Yellow Curry. A rich, creamy, and flavorful classic! Perfectly spiced with traditional Thai ingredients. Sorry chicken only!</p>
-              
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       
       {/* FAQ Section */}
