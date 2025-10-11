@@ -1,7 +1,9 @@
 import React from "react";
 
-const MenuCard = ({ item }) => (
-  <div className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden">
+const MenuCard = ({ item,onHoverItem  }) => (
+  <div className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden"
+  onMouseEnter={() => onHoverItem?.(item.name)}
+   >
     <div className="relative bg-gray-50">
       <div className="aspect-[4/3] w-full overflow-hidden">
         <img

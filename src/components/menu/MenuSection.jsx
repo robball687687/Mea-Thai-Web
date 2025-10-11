@@ -5,7 +5,7 @@ import CategoryTabs from "./CategoryTabs";
 import MenuCard from "./MenuCard";
 import { motion } from "framer-motion";
 
-const MenuSection = ({ menuData, isMobile, activeCategory, setActiveCategory, loading }) => {
+const MenuSection = ({ menuData, isMobile, activeCategory, setActiveCategory, loading,onHoverItem  }) => {
   const categories = menuData.map((s) => s.category);
   const visibleSections = loading
     ? []
@@ -57,7 +57,7 @@ const MenuSection = ({ menuData, isMobile, activeCategory, setActiveCategory, lo
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {section.items.map((item, idx) => (
-                  <MenuCard key={idx} item={item} />
+                  <MenuCard key={idx} item={item} onHoverItem={onHoverItem}  />
                 ))}
               </div>
             </div>
