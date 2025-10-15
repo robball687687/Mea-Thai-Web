@@ -16,6 +16,42 @@ import FeaturedDishes from "./components/menu/FeaturedDishes";
 import UGCFeed from "./components/social/UGCFeed";
 import VirtualTour from "./components/sections/VirtualTour";
 
+/* ==================== ADD: QuickFeedbackWidget ==================== */
+function QuickFeedbackWidget() {
+  const EMBED_SRC = "https://delightful-desert-0ea5f300f.1.azurestaticapps.net/embed/quickfeedback-noiframe.js";
+
+  useEffect(() => {
+    // Load once
+    if (!document.querySelector(`script[src="${EMBED_SRC}"]`)) {
+      const s = document.createElement("script");
+      s.src = EMBED_SRC;
+      s.defer = true;
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }, []);
+
+  // Just render the custom element; React will pass attributes through
+  return (
+    <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
+      <h2 className="text-2xl md:text-3xl font-bold mb-3">Quick Feedback</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        Tell us how we’re doing—your feedback helps us improve every week.
+      </p>
+
+      <lll-feedback
+        org-id="EF86021F-DDFD-470D-BE07-1357DBA8FBFC"
+        prompt-id="37711d27-8279-43ff-ac25-5a45d9eb4bfe"
+        api-base="https://delightful-desert-0ea5f300f.1.azurestaticapps.net"
+        mode="inline"
+        theme="auto"
+        source="web"
+      ></lll-feedback>
+    </div>
+  );
+}
+/* ================== END ADD: QuickFeedbackWidget ================== */
+
 function App() {
   const [menuData, setMenuData] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
@@ -165,6 +201,13 @@ function App() {
       <VirtualTour />
     </Section> */}
 
+
+    {/* ==================== ADD: Feedback Widget Section ==================== */}
+    <Section tone="warm">
+      <QuickFeedbackWidget />
+    </Section>
+    {/* ================== END ADD: Feedback Widget Section ================== */}
+    
     <Section tone="warm">
       <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
         <AboutSection />
