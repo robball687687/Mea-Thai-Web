@@ -42,7 +42,7 @@ function QuickFeedbackWidget() {
       <lll-feedback
         org-id="EF86021F-DDFD-470D-BE07-1357DBA8FBFC"
         prompt-id="37711d27-8279-43ff-ac25-5a45d9eb4bfe"
-        api-base="https://delightful-desert-0ea5f300f.1.azurestaticapps.net"
+        api-base="https://rmrlllwebapi.azurewebsites.net"
         mode="inline"
         theme="auto"
         source="web"
