@@ -1,258 +1,191 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { ThaiPaperBackground, Section, OrnamentalDivider, WaveDivider, TrustStrip, PhotoStrip, SoftCard } from "./components/layout/Sections";
-import SiteHeader from "./components/SiteHeader";
-import Hero from "./components/Hero";
-import DeliverySection from "./components/DeliverySection";
-import MenuSection from "./components/menu/MenuSection";
-import FAQSection from "./components/FAQSection";
-import TrailerSection from "./components/TrailerSection";
-import AboutSection from "./components/AboutSection";
-import ContactSection from "./components/ContactSection";
-import ScrollToTopButton from "./components/ScrollToTopButton";
+// src/App.jsx
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 
-import StickyAdaptiveCTA from "./components/cta/StickyAdaptiveCTA";
-import FeaturedDishes from "./components/menu/FeaturedDishes";
-import UGCFeed from "./components/social/UGCFeed";
-import VirtualTour from "./components/sections/VirtualTour";
+import HomePage from "./pages/HomePage";
+import TownLandingPage from "./pages/TownLandingPage";
 
-/* ==================== ADD: QuickFeedbackWidget ==================== */
-function QuickFeedbackWidget() {
-  const EMBED_SRC = "https://delightful-desert-0ea5f300f.1.azurestaticapps.net/embed/quickfeedback-noiframe.js";
-
-  useEffect(() => {
-    // Load once
-    if (!document.querySelector(`script[src="${EMBED_SRC}"]`)) {
-      const s = document.createElement("script");
-      s.src = EMBED_SRC;
-      s.defer = true;
-      s.async = true;
-      document.body.appendChild(s);
-    }
-  }, []);
-
-  // Just render the custom element; React will pass attributes through
-  return (
-    <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
-      <h2 className="text-2xl md:text-3xl font-bold mb-3">Quick Feedback</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Tell us how we’re doing—your feedback helps us improve every week.
-      </p>
-
-      <lll-feedback
-        org-id="EF86021F-DDFD-470D-BE07-1357DBA8FBFC"
-        prompt-id="37711d27-8279-43ff-ac25-5a45d9eb4bfe"
-        api-base="https://rmrlllwebapi.azurewebsites.net"
-        mode="inline"
-        theme="auto"
-        source="web"
-      ></lll-feedback>
-    </div>
-  );
-}
-/* ================== END ADD: QuickFeedbackWidget ================== */
-
-function App() {
-  const [menuData, setMenuData] = useState([]);
-  const [activeCategory, setActiveCategory] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [orderLink, setOrderLink] = useState("https://polite-mud-02f9f1a0f.6.azurestaticapps.net");
-  const [loading, setLoading] = useState(true);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [isOrderingEnabled, setIsOrderingEnabled] = useState(true);
-  const [currentDish, setCurrentDish] = useState("");
-  const [hoveredDish, setHoveredDish] = useState("");
-
-  const UGC_IMAGES = [
-  "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1470&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1544025168-53eacb06120d?q=80&w=1470&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1541542684-4a7a737c43b6?q=80&w=1470&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1525755662778-989d0524087e?q=80&w=1470&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1470&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1470&auto=format&fit=crop",
+// all your town SEO configs
+const townConfigs = [
+  {
+    path: "/thai-restaurant-kingston-ma",
+    town: "Kingston, MA",
+    title: "Thai Restaurant Near Kingston, MA | The Mea Thai Cuisine",
+    description:
+      "Looking for Thai food near Kingston, MA? The Mea Thai Cuisine in nearby Plymouth serves Pad Thai, curries, fried rice, ramen, and more with easy online ordering and takeout.",
+    h1: "Thai Restaurant Near Kingston, MA",
+    intro:
+      "If you live in Kingston, MA and you’ve been searching for authentic Thai food near you, The Mea Thai Cuisine in downtown Plymouth is your go-to spot. We’re a short drive from Kingston and offer fresh Thai dishes made to order for dine-in, takeout, or online ordering.",
+    paragraphs: [
+      "Our kitchen focuses on bold flavors, fresh ingredients, and consistent quality. From classic Pad Thai and Drunken Noodles to rich Panang and Red Curry, you’ll find something for everyone—whether you like mild, medium, or spicy.",
+      "Many of our Kingston customers order ahead online, pick up their Thai food on the way home, or stop in for a relaxed dinner in nearby Plymouth.",
+      "We are located at 39 Court St, Plymouth, MA 02360 and proudly serve guests from Kingston, Duxbury, Carver, Pembroke, Marshfield, Bourne, Sandwich, and the South Shore.",
+    ],
+    bullets: [
+      "Pad Thai with chicken, shrimp, or tofu",
+      "Drunken Noodles (Pad Kee Mao)",
+      "Green, Red, and Panang Curry with jasmine rice",
+      "Pineapple Fried Rice",
+      "Thai appetizers like spring rolls and crab rangoon",
+      "Homemade ramen on select days",
+    ],
+    ctaLabel: "View Menu & Order Online",
+  },
+  {
+    path: "/thai-food-duxbury-ma",
+    town: "Duxbury, MA",
+    title: "Thai Food Near Duxbury, MA | The Mea Thai Cuisine",
+    description:
+      "Searching for Thai food near Duxbury, MA? The Mea Thai Cuisine in Plymouth offers authentic Thai noodles, curries, fried rice, and appetizers, with easy takeout and online ordering.",
+    h1: "Thai Food Near Duxbury, MA",
+    intro:
+      "Residents of Duxbury, MA looking for authentic Thai food are just a short drive away from The Mea Thai Cuisine in Plymouth. Our family-owned restaurant serves classic Thai dishes with fresh vegetables, quality meats, and house-made sauces.",
+    paragraphs: [
+      "Whether you’re coming from Duxbury Beach, heading home after work, or planning a dinner out, our Thai restaurant in nearby Plymouth is a convenient spot for dine-in, takeout, and online orders.",
+      "We can adjust spice levels and offer vegetarian-friendly options, so everyone in your group can find something they love.",
+    ],
+    bullets: [
+      "Pad Thai with shrimp or tofu",
+      "Massaman and Panang Curry",
+      "Fresh spring rolls and crispy crab rangoon",
+      "Spicy Drunken Noodles and Basil Fried Rice",
+      "Warm Thai soups and occasional ramen specials",
+    ],
+    ctaLabel: "View Thai Menu & Order Online",
+  },
+  {
+    path: "/thai-restaurant-carver-ma",
+    town: "Carver, MA",
+    title: "Thai Restaurant Near Carver, MA | The Mea Thai Cuisine",
+    description:
+      "Looking for a Thai restaurant near Carver, MA? The Mea Thai Cuisine in Plymouth serves Pad Thai, curries, fried rice, noodles, and appetizers with easy takeout and online ordering.",
+    h1: "Thai Restaurant Near Carver, MA",
+    intro:
+      "If you live in Carver, MA and you’re craving Thai food, The Mea Thai Cuisine in Plymouth is your nearby destination for flavorful curries, noodle dishes, and Thai appetizers.",
+    paragraphs: [
+      "We prepare every dish fresh to order, using authentic Thai seasonings, herbs, and sauces. From mild, comforting dishes to bold and spicy plates, there’s a flavor profile for everyone.",
+      "Many customers from Carver order online, then pick up their food at our convenient Plymouth location. It’s an easy way to bring Thai restaurant quality home without a long wait.",
+    ],
+    bullets: [
+      "Pad Thai and Pad See Ew",
+      "Red, Green, and Massaman Curries",
+      "Thai fried rice and Basil Fried Rice",
+      "Spring rolls, gyoza, and crispy appetizers",
+      "Specials like ramen and seasonal Thai dishes",
+    ],
+    ctaLabel: "Browse Thai Menu & Order",
+  },
+  {
+    path: "/thai-takeout-pembroke-ma",
+    town: "Pembroke, MA",
+    title: "Thai Takeout Near Pembroke, MA | The Mea Thai Cuisine",
+    description:
+      "Need Thai takeout near Pembroke, MA? The Mea Thai Cuisine in Plymouth has Pad Thai, curries, noodles, and appetizers with convenient online ordering and pickup.",
+    h1: "Thai Takeout Near Pembroke, MA",
+    intro:
+      "If you’re in Pembroke, MA and looking for Thai takeout, The Mea Thai Cuisine in Plymouth is a convenient option for fresh, flavorful Thai food.",
+    paragraphs: [
+      "We offer a wide range of Thai dishes—noodles, curries, fried rice, soups, and appetizers—so everyone at your table can find a favorite.",
+      "Place your Thai takeout order online, choose your pickup time, and we’ll have your food ready at 39 Court St, Plymouth, MA 02360.",
+    ],
+    bullets: [
+      "Pad Thai and Drunken Noodles",
+      "Chicken, beef, shrimp, or tofu curries",
+      "Pineapple Fried Rice and Basil Fried Rice",
+      "Thai wings, dumplings, and crispy appetizers",
+      "Comforting soups and seasonal ramen bowls",
+    ],
+    ctaLabel: "Order Thai Takeout Online",
+  },
+  {
+    path: "/thai-food-marshfield-ma",
+    town: "Marshfield, MA",
+    title: "Thai Food Near Marshfield, MA | The Mea Thai Cuisine",
+    description:
+      "Craving Thai food near Marshfield, MA? The Mea Thai Cuisine in Plymouth serves Pad Thai, curries, noodles, fried rice, and appetizers with dine-in and takeout options.",
+    h1: "Thai Food Near Marshfield, MA",
+    intro:
+      "The Mea Thai Cuisine is a popular spot for guests coming from Marshfield, MA who want flavorful Thai food without going into the city.",
+    paragraphs: [
+      "Located in nearby Plymouth, we serve classic Thai dishes made with fresh ingredients and authentic seasonings.",
+      "Stop in for a relaxed dine-in experience or order Thai takeout and pick it up on your way home from work or the beach.",
+    ],
+    bullets: [
+      "Pad Thai and Pad See Ew",
+      "Red, Green, and Panang Curry",
+      "Thai fried rice and Basil Fried Rice",
+      "Spring rolls, dumplings, and Thai appetizers",
+      "Ramen and seasonal special dishes",
+    ],
+    ctaLabel: "See Thai Menu & Order Online",
+  },
+  {
+    path: "/thai-restaurant-bourne-ma",
+    town: "Bourne, MA",
+    title: "Thai Restaurant Near Bourne, MA | The Mea Thai Cuisine",
+    description:
+      "Looking for a Thai restaurant near Bourne, MA? The Mea Thai Cuisine in Plymouth offers Thai curries, noodles, fried rice, and appetizers, with dine-in and takeout available.",
+    h1: "Thai Restaurant Near Bourne, MA",
+    intro:
+      "Coming from Bourne, MA and craving Thai food? The Mea Thai Cuisine in Plymouth is a nearby Thai restaurant where you can enjoy noodles, curries, fried rice, and appetizers in a warm, welcoming atmosphere.",
+    paragraphs: [
+      "Whether you’re heading over the canal or planning a trip to the South Shore, our restaurant is a convenient stop for lunch, dinner, or Thai takeout.",
+      "Many Bourne customers order ahead online and pick up their Thai food at our Plymouth location so it’s hot and ready right when they arrive.",
+    ],
+    bullets: [
+      "Pad Thai, Drunken Noodles, and other Thai noodle dishes",
+      "Red, Green, and Massaman curries with jasmine rice",
+      "Thai fried rice, Pineapple Fried Rice, and Basil Fried Rice",
+      "Appetizers like spring rolls, wings, and dumplings",
+      "Ramen specials and seasonal Thai comfort food",
+    ],
+    ctaLabel: "View Thai Dishes & Order",
+  },
+  {
+    path: "/thai-food-sandwich-ma",
+    town: "Sandwich, MA",
+    title: "Thai Food Near Sandwich, MA | The Mea Thai Cuisine",
+    description:
+      "Searching for Thai food near Sandwich, MA? The Mea Thai Cuisine in Plymouth serves Pad Thai, curries, noodles, fried rice, and Thai appetizers for dine-in and takeout.",
+    h1: "Thai Food Near Sandwich, MA",
+    intro:
+      "If you’re in Sandwich, MA and looking for Thai food, The Mea Thai Cuisine in nearby Plymouth is a great option for dine-in or Thai takeout.",
+    paragraphs: [
+      "Our family-owned Thai restaurant focuses on flavor, consistency, and friendly service. It’s a comfortable place to sit down for a meal or pick up dinner on your way through the South Shore.",
+      "We’re located at 39 Court St, Plymouth, MA 02360, serving guests from Sandwich, Bourne, Kingston, Duxbury, and beyond.",
+    ],
+    bullets: [
+      "Pad Thai and Pad See Ew",
+      "Coconut-based curries like Panang and Green Curry",
+      "Thai fried rice, Pineapple Fried Rice, and Basil Fried Rice",
+      "Appetizers such as spring rolls, crab rangoon, and wings",
+      "Soup specials and occasional ramen offerings",
+    ],
+    ctaLabel: "View Thai Menu & Order Online",
+  },
 ];
 
-
-  useEffect(() => {
-    axios
-      .get("https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCPOSWebMenu")
-      .then((res) => {
-        const categories = res.data.menuItemCategories || [];
-        const structuredMenu = categories
-          .filter((cat) => cat.menuItems?.length > 0)
-          .map((cat) => ({
-            category: cat.categoryName,
-            items: cat.menuItems
-              .filter((m) => m.item?.active)
-              .map((m) => ({
-                name: m.item.itemName,
-                price: `$${m.item.itemPrice.toFixed(2)}`,
-                description: m.item.itemDesc,
-                image: m.item.itemImage,
-              })),
-          }));
-        setMenuData(structuredMenu);
-        if (structuredMenu.length) setActiveCategory(structuredMenu[0].category);
-        setLoading(false);
-      })
-      .catch((err) => console.error("Failed to load WebMenu:", err));
-
-    axios
-      .get(
-        "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/value/Mea-Online-Ordering-Website-On-Off?name=Mea-Online-Ordering-Website-On-Off"
-      )
-      .then((res) => {
-        const rawValue = res.data?.toString().trim().toLowerCase();
-        const isOff = rawValue === "off" || rawValue === "0" || rawValue === "false";
-        setIsOrderingEnabled(!isOff);
-      })
-      .catch(() => setIsOrderingEnabled(true));
-
-    axios
-      .get("https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/link")
-      .then((res) => setOrderLink(res.data))
-      .catch((err) => console.error("Failed to fetch order link:", err));
-
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const scrollToMenu = () => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
-
-  const PatternDivider = () => (
-  <div className="w-full h-6 shadow-[0_-15px_20px_-10px_rgba(0,0,0,0.2)] bg-white" />);
-
+export default function App() {
   return (
-  <ThaiPaperBackground>
-    <SiteHeader
-      orderLink={orderLink}
-      isOrderingEnabled={isOrderingEnabled}
-      mobileNavOpen={mobileNavOpen}
-      setMobileNavOpen={setMobileNavOpen}
-    />
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Home SPA (your full restaurant page) */}
+          <Route path="/" element={<HomePage />} />
 
-    <Hero onCta={scrollToMenu} />
-    
-    <TrustStrip />
+          {/* Town SEO landing pages */}
+          {townConfigs.map((cfg) => (
+            <Route
+              key={cfg.path}
+              path={cfg.path}
+              element={<TownLandingPage {...cfg} />}
+            />
+          ))}
 
-    {/* Optional: a quick photo strip could go here if you want */}
-
-    <Section tone="light">
-      <DeliverySection />
-    </Section>
-
-    {/* NEW: Featured dishes with microinteractions */}
-    {/* <Section tone="warm">
-      <h2 className="text-2xl md:text-3xl font-bold mb-6">Signature Dishes</h2>
-      <FeaturedDishes menuData={menuData} onItemInView={setCurrentDish} />
-    </Section> */}
-
-    {/* Existing full Menu */}
-    <Section tone="warm" id="menu">
-      <MenuSection
-        menuData={menuData}
-        isMobile={isMobile}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        loading={loading}
-        onHoverItem={setHoveredDish}
-      />
-    </Section>
-
-    <Section tone="light">
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
-          <FAQSection />
-        </div>
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
-          <TrailerSection />
-        </div>
-      </div>
-      <OrnamentalDivider />
-    </Section>
-
-    {/* NEW: UGC */}
-    {/* <Section tone="warm">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl md:text-3xl font-bold">From Our Guests</h2>
-        <a
-          href="#"
-          className="text-red-600 hover:text-red-700 font-semibold text-sm"
-          onClick={(e) => e.preventDefault()}
-        >
-          Tag us @themeathaicuisine →
-        </a>
-      </div>
-      <UGCFeed images={UGC_IMAGES} />
-    </Section> */}
-
-    {/* NEW: Virtual Tour */}
-    {/* <Section tone="light">
-      <h2 className="text-2xl md:text-3xl font-bold mb-4">Take a Virtual Tour</h2>
-      <VirtualTour />
-    </Section> */}
-
-
-    {/* ==================== ADD: Feedback Widget Section ==================== */}
-    <Section tone="warm">
-      <QuickFeedbackWidget />
-    </Section>
-    {/* ================== END ADD: Feedback Widget Section ================== */}
-    
-    <Section tone="warm">
-      <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
-        <AboutSection />
-      </div>
-    </Section>
-
-    <Section tone="light">
-      <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
-        <ContactSection />
-      </div>
-    </Section>
-
-    {/* Desktop persistent CTA (you already had this) */}
-    {isOrderingEnabled && (
-      <a
-        href={orderLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hidden md:inline-block bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow hover:bg-red-700 transition mb-12"
-      >
-        Order Online
-      </a>
-    )}
-
-    {/* Mobile floating CTA (you already had this) */}
-    {isOrderingEnabled && (
-      <div className="fixed bottom-4 left-0 right-0 flex justify-center md:hidden z-50">
-        <a
-          href={orderLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-red-700 transition"
-        >
-          Order Online
-        </a>
-      </div>
-    )}
-
-    {/* NEW: Sticky adaptive CTA that reacts to visible dish names */}
-    <StickyAdaptiveCTA currentDish={hoveredDish } orderLink={orderLink} />
-
-    <ScrollToTopButton show={showScrollTop} />
-  </ThaiPaperBackground>
-);
-
+          {/* Optional: 404 route could go here */}
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
+  );
 }
-
-export default App;
