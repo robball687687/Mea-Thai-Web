@@ -28,6 +28,9 @@ import FeaturedDishes from "../components/menu/FeaturedDishes";
 import UGCFeed from "../components/social/UGCFeed";
 import VirtualTour from "../components/sections/VirtualTour";
 
+// ✅ NEW
+import NewsSection from "../components/NewsSection";
+
 /* ==================== QuickFeedbackWidget ==================== */
 function QuickFeedbackWidget() {
   const EMBED_SRC =
@@ -175,10 +178,7 @@ function HomePage() {
       postalCode: "02360",
       addressCountry: "US",
     },
-    image: [
-      // replace with your real image URLs if you want
-      `${SITE_URL}/images/hero-main.jpg`,
-    ],
+    image: [`${SITE_URL}/images/hero-main.jpg`],
     sameAs: [
       "https://www.facebook.com/themeathaicuisine",
       "https://www.instagram.com/themeathaicuisine",
@@ -205,19 +205,13 @@ function HomePage() {
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="restaurant" />
-        <meta
-          property="og:title"
-          content={`${BUSINESS_NAME} | Thai in ${CITY}`}
-        />
+        <meta property="og:title" content={`${BUSINESS_NAME} | Thai in ${CITY}`} />
         <meta
           property="og:description"
           content="Craving Thai in Plymouth, MA? Enjoy curries, noodles, fried rice, and homemade ramen at The Mea Thai Cuisine. Order online or dine in."
         />
         <meta property="og:url" content={SITE_URL} />
-        <meta
-          property="og:image"
-          content={`${SITE_URL}/images/og-mea-thai.jpg`}
-        />
+        <meta property="og:image" content={`${SITE_URL}/images/og-mea-thai.jpg`} />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -229,10 +223,7 @@ function HomePage() {
           name="twitter:description"
           content="Authentic Thai food in Plymouth, MA — noodles, curries, fried rice, and ramen."
         />
-        <meta
-          name="twitter:image"
-          content={`${SITE_URL}/images/og-mea-thai.jpg`}
-        />
+        <meta name="twitter:image" content={`${SITE_URL}/images/og-mea-thai.jpg`} />
 
         {/* Restaurant Schema */}
         <script type="application/ld+json">
@@ -249,11 +240,14 @@ function HomePage() {
 
       <Hero onCta={scrollToMenu} />
 
-      <TrustStrip />
-
+      <TrustStrip />      
+      
       <Section tone="light">
         <DeliverySection />
       </Section>
+
+      {/* ✅ NEW: News (top 5) */}
+      <NewsSection take={5} />
 
       {/* ====== SEO TEXT BLOCK: LOCAL KEYWORDS ====== */}
       <Section tone="warm" id="plymouth-thai-restaurant">
