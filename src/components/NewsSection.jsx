@@ -20,10 +20,10 @@ export default function NewsSection({ take = 5 }) {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 👇 controls which item is open (0 = first item)
+  // controls which item is open (0 = first item)
   const [openIndex, setOpenIndex] = useState(0);
 
-  // 👇 modal state (comments)
+  // modal state (comments)
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePost, setActivePost] = useState(null);
 
@@ -39,7 +39,7 @@ export default function NewsSection({ take = 5 }) {
         const arr = Array.isArray(latest) ? latest : [];
         setNews(arr);
 
-        // 👇 always default to first item open when new data loads
+        // default to first item open when new data loads
         setOpenIndex(arr.length ? 0 : -1);
       } catch (e) {
         console.error("Failed to load news:", e);
@@ -79,13 +79,19 @@ export default function NewsSection({ take = 5 }) {
                 <details
                   key={p.blogPostId}
                   className="group open:bg-gray-50"
-                  open={isOpen} // 👈 first item opens, controlled
-                  onToggle={(e) => {
-                    const nextOpen = e.currentTarget.open;
-                    setOpenIndex(nextOpen ? idx : -1);
-                  }}
+                  open={isOpen} // controlled
                 >
-                  <summary className="cursor-pointer list-none p-5 text-gray-900 flex items-start justify-between gap-4">
+                  <summary
+                    className="cursor-pointer list-none p-5 text-gray-900 flex items-start justify-between gap-4"
+                    onClick={(e) => {
+                      // 🔥 stop the browser from doing its own <details> toggle
+                      // we control open state via React to guarantee only one open
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      setOpenIndex((prev) => (prev === idx ? -1 : idx));
+                    }}
+                  >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         {dateLabel ? (
@@ -98,7 +104,6 @@ export default function NewsSection({ take = 5 }) {
                           </span>
                         )}
 
-                        {/* 👇 bigger clarity for 2nd+ items when collapsed */}
                         {!isOpen && idx > 0 && (
                           <span className="text-[11px] font-semibold uppercase tracking-wide text-red-700">
                             Expand
@@ -117,7 +122,6 @@ export default function NewsSection({ take = 5 }) {
                       )}
                     </div>
 
-                    {/* Smaller + clearer affordance */}
                     <span className="ml-4 shrink-0 flex items-center gap-2">
                       {!isOpen ? (
                         <span className="text-[11px] text-red-700 font-semibold">
@@ -147,13 +151,12 @@ export default function NewsSection({ take = 5 }) {
                       </div>
                     )}
 
-                    {/* 👇 Comments button (opens modal) */}
                     <div className="mt-4 flex justify-end">
                       <button
                         type="button"
                         className="text-sm font-semibold text-red-700 hover:text-red-800 underline underline-offset-4"
                         onClick={(e) => {
-                          // IMPORTANT: prevent summary/details toggling
+                          // prevent summary/details toggling
                           e.preventDefault();
                           e.stopPropagation();
                           setActivePost(p);
@@ -171,7 +174,6 @@ export default function NewsSection({ take = 5 }) {
         )}
       </div>
 
-      {/* 👇 Comments modal */}
       <NewsCommentsModal
         open={commentsOpen}
         onClose={() => setCommentsOpen(false)}
