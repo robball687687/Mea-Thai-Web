@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link,useLocation  } from "react-router-dom";
 
 import {
   ThaiPaperBackground,
@@ -75,6 +75,7 @@ const CITY = "Plymouth";
 const STATE = "MA";
 
 function HomePage() {
+  const location = useLocation();
   const [menuData, setMenuData] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -153,6 +154,16 @@ function HomePage() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+    useEffect(() => {
+    if (location.state?.scrollTo) {
+      const targetId = location.state.scrollTo;
+
+      setTimeout(() => {
+        document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+    }
+  }, [location]);
 
   const scrollToMenu = () =>
     document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
@@ -282,14 +293,16 @@ function HomePage() {
       </Section>
 
       <Section tone="light">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
+        <div className="space-y-8">
+          <div className="rounded-3xl bg-white/70 backdrop-blur-sm shadow-sm p-6 md:p-8">
             <FAQSection />
           </div>
-          <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
+
+          <div className="rounded-3xl bg-white/70 backdrop-blur-sm shadow-sm p-0 md:p-2 overflow-hidden">
             <TrailerSection />
           </div>
         </div>
+
         <OrnamentalDivider />
       </Section>
 

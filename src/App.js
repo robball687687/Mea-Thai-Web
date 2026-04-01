@@ -5,6 +5,8 @@ import { HelmetProvider } from "react-helmet-async";
 
 import HomePage from "./pages/HomePage";
 import TownLandingPage from "./pages/TownLandingPage";
+import FoodTrailerSchedulePage from "./pages/FoodTrailerSchedulePage";
+import FoodTrailerRequestPage from "./pages/FoodTrailerRequestPage";
 
 // all your town SEO configs
 const townConfigs = [
@@ -171,10 +173,17 @@ export default function App() {
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
-          {/* Home SPA (your full restaurant page) */}
           <Route path="/" element={<HomePage />} />
 
-          {/* Town SEO landing pages */}
+          <Route
+            path="/food-trailer/schedule"
+            element={<FoodTrailerSchedulePage />}
+          />
+          <Route
+            path="/food-trailer/request"
+            element={<FoodTrailerRequestPage />}
+          />
+
           {townConfigs.map((cfg) => (
             <Route
               key={cfg.path}
@@ -182,8 +191,6 @@ export default function App() {
               element={<TownLandingPage {...cfg} />}
             />
           ))}
-
-          {/* Optional: 404 route could go here */}
         </Routes>
       </BrowserRouter>
     </HelmetProvider>
