@@ -2,16 +2,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
-import { Link,useLocation  } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import {
   ThaiPaperBackground,
   Section,
   OrnamentalDivider,
-  WaveDivider,
   TrustStrip,
-  PhotoStrip,
-  SoftCard,
 } from "../components/layout/Sections";
 import SiteHeader from "../components/SiteHeader";
 import Hero from "../components/Hero";
@@ -24,11 +21,6 @@ import ContactSection from "../components/ContactSection";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 
 import StickyAdaptiveCTA from "../components/cta/StickyAdaptiveCTA";
-import FeaturedDishes from "../components/menu/FeaturedDishes";
-import UGCFeed from "../components/social/UGCFeed";
-import VirtualTour from "../components/sections/VirtualTour";
-
-// ✅ NEW
 import NewsSection from "../components/NewsSection";
 
 /* ==================== QuickFeedbackWidget ==================== */
@@ -37,7 +29,6 @@ function QuickFeedbackWidget() {
     "https://delightful-desert-0ea5f300f.1.azurestaticapps.net/embed/quickfeedback-noiframe.js";
 
   useEffect(() => {
-    // Load once
     if (!document.querySelector(`script[src="${EMBED_SRC}"]`)) {
       const s = document.createElement("script");
       s.src = EMBED_SRC;
@@ -47,7 +38,6 @@ function QuickFeedbackWidget() {
     }
   }, []);
 
-  // Just render the custom element; React will pass attributes through
   return (
     <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
       <h2 className="text-2xl md:text-3xl font-bold mb-3">Quick Feedback</h2>
@@ -68,15 +58,69 @@ function QuickFeedbackWidget() {
 }
 /* ================== END QuickFeedbackWidget ================== */
 
-// ====== SEO CONSTANTS (edit domain + address if needed) ======
-const SITE_URL = "https://the-mea-thai-cuisine.com"; // TODO: set your real domain
+// ====== SEO CONSTANTS ======
+const SITE_URL = "https://the-mea-thai-cuisine.com";
 const BUSINESS_NAME = "The Mea Thai Cuisine";
 const CITY = "Plymouth";
 const STATE = "MA";
 
+const FALLBACK_IMAGE =
+  "https://rmrstorage.blob.core.windows.net/measite/MeaLogoBlackTrans.png";
+
+function getBestImage(item) {
+  if (item?.imageUrl) return item.imageUrl;
+
+  if (Array.isArray(item?.images) && item.images.length > 0) {
+    const primaryActive = item.images.find((img) => img?.isPrimary && img?.active);
+    if (primaryActive?.imageUrl) return primaryActive.imageUrl;
+
+    const firstActive = item.images.find((img) => img?.active);
+    if (firstActive?.imageUrl) return firstActive.imageUrl;
+
+    const firstAny = item.images.find((img) => img?.imageUrl);
+    if (firstAny?.imageUrl) return firstAny.imageUrl;
+  }
+
+  return FALLBACK_IMAGE;
+}
+
+function groupMenuItems(items) {
+  const grouped = new Map();
+
+  items.forEach((item) => {
+    if (!item?.isActive) return;
+
+    const categoryName = item.categoryName || "Other";
+    const categorySortOrder = item.categorySortOrder ?? 9999;
+
+    if (!grouped.has(categoryName)) {
+      grouped.set(categoryName, {
+        categoryName,
+        categorySortOrder,
+        items: [],
+      });
+    }
+
+    grouped.get(categoryName).items.push({
+      ...item,
+      displayImage: getBestImage(item),
+    });
+  });
+
+  return Array.from(grouped.values())
+    .map((section) => ({
+      ...section,
+      items: [...section.items].sort((a, b) =>
+        (a.name || "").localeCompare(b.name || "")
+      ),
+    }))
+    .sort((a, b) => a.categorySortOrder - b.categorySortOrder);
+}
+
 function HomePage() {
   const location = useLocation();
-  const [menuData, setMenuData] = useState([]);
+
+  const [menuSections, setMenuSections] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -86,67 +130,67 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isOrderingEnabled, setIsOrderingEnabled] = useState(true);
-  const [currentDish, setCurrentDish] = useState("");
   const [hoveredDish, setHoveredDish] = useState("");
 
-  const UGC_IMAGES = [
-    "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1470&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1544025168-53eacb06120d?q=80&w=1470&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1541542684-4a7a737c43b6?q=80&w=1470&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1525755662778-989d0524087e?q=80&w=1470&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1470&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1470&auto=format&fit=crop",
-  ];
-
   useEffect(() => {
-    axios
-      .get(
-        "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCPOSWebMenu"
-      )
-      .then((res) => {
-        const categories = res.data.menuItemCategories || [];
-        const structuredMenu = categories
-          .filter((cat) => cat.menuItems?.length > 0)
-          .map((cat) => ({
-            category: cat.categoryName,
-            items: cat.menuItems
-              .filter((m) => m.item?.active)
-              .map((m) => ({
-                name: m.item.itemName,
-                price: `$${m.item.itemPrice.toFixed(2)}`,
-                description: m.item.itemDesc,
-                image: m.item.itemImage,
-              })),
-          }));
-        setMenuData(structuredMenu);
-        if (structuredMenu.length) setActiveCategory(structuredMenu[0].category);
-        setLoading(false);
-      })
-      .catch((err) => console.error("Failed to load WebMenu:", err));
+    const loadMenu = async () => {
+      try {
+        const res = await axios.get(
+          "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/MeaMenu/online"
+        );
 
-    axios
-      .get(
-        "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/value/Mea-Online-Ordering-Website-On-Off?name=Mea-Online-Ordering-Website-On-Off"
-      )
-      .then((res) => {
+        const items = Array.isArray(res.data) ? res.data : [];
+        const grouped = groupMenuItems(items);
+
+        setMenuSections(grouped);
+        if (grouped.length > 0) {
+          setActiveCategory(grouped[0].categoryName);
+        }
+      } catch (err) {
+        console.error("Failed to load MeaMenu online items:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const loadOrderingFlag = async () => {
+      try {
+        const res = await axios.get(
+          "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/value/Mea-Online-Ordering-Website-On-Off?name=Mea-Online-Ordering-Website-On-Off"
+        );
+
         const rawValue = res.data?.toString().trim().toLowerCase();
         const isOff =
           rawValue === "off" || rawValue === "0" || rawValue === "false";
-        setIsOrderingEnabled(!isOff);
-      })
-      .catch(() => setIsOrderingEnabled(true));
 
-    axios
-      .get(
-        "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/link"
-      )
-      .then((res) => setOrderLink(res.data))
-      .catch((err) => console.error("Failed to fetch order link:", err));
+        setIsOrderingEnabled(!isOff);
+      } catch {
+        setIsOrderingEnabled(true);
+      }
+    };
+
+    const loadOrderLink = async () => {
+      try {
+        const res = await axios.get(
+          "https://rmrthemeaonlineorderingwebapi.azurewebsites.net/api/TCVariable/link"
+        );
+        setOrderLink(res.data);
+      } catch (err) {
+        console.error("Failed to fetch order link:", err);
+      }
+    };
+
+    loadMenu();
+    loadOrderingFlag();
+    loadOrderLink();
 
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
     const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+
+    checkMobile();
+    handleScroll();
+
+    window.addEventListener("resize", checkMobile);
     window.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -155,24 +199,22 @@ function HomePage() {
     };
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (location.state?.scrollTo) {
       const targetId = location.state.scrollTo;
 
       setTimeout(() => {
-        document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
+        document.getElementById(targetId)?.scrollIntoView({
+          behavior: "smooth",
+        });
       }, 150);
     }
   }, [location]);
 
-  const scrollToMenu = () =>
+  const scrollToMenu = () => {
     document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  const PatternDivider = () => (
-    <div className="w-full h-6 shadow-[0_-15px_20px_-10px_rgba(0,0,0,0.2)] bg-white" />
-  );
-
-  // ===== Restaurant Schema (JSON-LD) =====
   const restaurantSchema = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -198,7 +240,6 @@ function HomePage() {
 
   return (
     <ThaiPaperBackground>
-      {/* ====== SEO META / HEAD ====== */}
       <Helmet>
         <title>
           {BUSINESS_NAME} | Authentic Thai Restaurant in {CITY}, {STATE}
@@ -214,7 +255,6 @@ function HomePage() {
         />
         <link rel="canonical" href={SITE_URL} />
 
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="restaurant" />
         <meta property="og:title" content={`${BUSINESS_NAME} | Thai in ${CITY}`} />
         <meta
@@ -224,7 +264,6 @@ function HomePage() {
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:image" content={`${SITE_URL}/images/og-mea-thai.jpg`} />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -236,7 +275,6 @@ function HomePage() {
         />
         <meta name="twitter:image" content={`${SITE_URL}/images/og-mea-thai.jpg`} />
 
-        {/* Restaurant Schema */}
         <script type="application/ld+json">
           {JSON.stringify(restaurantSchema)}
         </script>
@@ -251,16 +289,14 @@ function HomePage() {
 
       <Hero onCta={scrollToMenu} />
 
-      <TrustStrip />      
-      
+      <TrustStrip />
+
       <Section tone="light">
         <DeliverySection />
       </Section>
 
-      {/* ✅ NEW: News (top 5) */}
       <NewsSection take={5} />
 
-      {/* ====== SEO TEXT BLOCK: LOCAL KEYWORDS ====== */}
       <Section tone="warm" id="plymouth-thai-restaurant">
         <article className="rounded-2xl bg-white/80 backdrop-blur-sm shadow-sm p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
@@ -273,17 +309,16 @@ function HomePage() {
             Panang Curry, and homemade ramen, prepared fresh to order.
           </p>
           <p className="text-sm md:text-base text-gray-700">
-            Whether you&apos;re looking for dine-in Thai food in {CITY},{" "}
-            takeout after work, or easy online ordering, we&apos;re proud to be
-            one of the top-rated Thai restaurants in Plymouth, MA.
+            Whether you&apos;re looking for dine-in Thai food in {CITY}, takeout
+            after work, or easy online ordering, we&apos;re proud to be one of
+            the top-rated Thai restaurants in Plymouth, MA.
           </p>
         </article>
       </Section>
 
-      {/* Existing full Menu */}
       <Section tone="warm" id="menu">
         <MenuSection
-          menuData={menuData}
+          sections={menuSections}
           isMobile={isMobile}
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
@@ -306,12 +341,10 @@ function HomePage() {
         <OrnamentalDivider />
       </Section>
 
-      {/* Feedback Widget Section */}
       <Section tone="warm">
         <QuickFeedbackWidget />
       </Section>
 
-      {/* NEW: Serving Nearby Towns with internal links */}
       <Section tone="warm">
         <div className="rounded-2xl bg-white/80 backdrop-blur-sm shadow p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
@@ -395,7 +428,6 @@ function HomePage() {
         </div>
       </Section>
 
-      {/* Desktop persistent CTA */}
       {isOrderingEnabled && (
         <a
           href={orderLink}
@@ -407,7 +439,6 @@ function HomePage() {
         </a>
       )}
 
-      {/* Mobile floating CTA */}
       {isOrderingEnabled && (
         <div className="fixed bottom-4 left-0 right-0 flex justify-center md:hidden z-50">
           <a
@@ -421,7 +452,6 @@ function HomePage() {
         </div>
       )}
 
-      {/* Sticky adaptive CTA that reacts to visible dish names */}
       <StickyAdaptiveCTA currentDish={hoveredDish} orderLink={orderLink} />
 
       <ScrollToTopButton show={showScrollTop} />
