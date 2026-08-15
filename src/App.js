@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import TownLandingPage from "./pages/TownLandingPage";
 import FoodTrailerSchedulePage from "./pages/FoodTrailerSchedulePage";
 import FoodTrailerRequestPage from "./pages/FoodTrailerRequestPage";
+import JoinOurTeamPage from "./pages/JoinOurTeamPage";
 
 // all your town SEO configs
 const townConfigs = [
@@ -183,7 +184,10 @@ export default function App() {
             path="/food-trailer/request"
             element={<FoodTrailerRequestPage />}
           />
-
+        <Route
+          path="/join-our-team"
+          element={<JoinOurTeamPage />}
+        />
           {townConfigs.map((cfg) => (
             <Route
               key={cfg.path}

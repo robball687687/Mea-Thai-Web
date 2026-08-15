@@ -1,7 +1,15 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const NAV_ITEMS = ["News", "Menu", "FAQ", "Trailer", "About", "Contact"];
+const NAV_ITEMS = [
+  { label: "News", section: "news" },
+  { label: "Menu", section: "menu" },
+  { label: "FAQ", section: "faq" },
+  { label: "Trailer", section: "trailer" },
+  { label: "About", section: "about" },
+  { label: "Contact", section: "contact" },
+  { label: "Join Our Team", path: "/join-our-team" },
+];
 
 const sectionToId = (section) => section.toLowerCase();
 
@@ -40,14 +48,24 @@ export default function SiteHeader({
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-4 text-white text-sm md:text-base">
-          {NAV_ITEMS.map((section) => (
+          {NAV_ITEMS.map((item) => (
             <button
-              key={section}
+              key={item.label}
               type="button"
-              onClick={() => goToSection(section)}
-              className="hover:text-red-400 transition"
+              onClick={() => {
+                if (item.path) {
+                  navigate(item.path);
+                } else {
+                  goToSection(item.section);
+                }
+              }}
+              className={`hover:text-red-400 transition ${
+                item.path && location.pathname === item.path
+                  ? "text-red-400 font-semibold"
+                  : ""
+              }`}
             >
-              {section}
+              {item.label}
             </button>
           ))}
         </nav>
@@ -88,19 +106,28 @@ export default function SiteHeader({
       {/* Mobile Nav */}
       {mobileNavOpen && (
         <div className="md:hidden bg-black text-white flex flex-col items-center gap-2 py-4 transition-all duration-300 ease-in-out z-40">
-          {NAV_ITEMS.map((section) => (
-            <button
-              key={section}
-              type="button"
-              onClick={() => {
-                setMobileNavOpen(false);
-                goToSection(section);
-              }}
-              className="text-lg py-2 hover:text-red-400"
-            >
-              {section}
-            </button>
-          ))}
+          {NAV_ITEMS.map((item) => (
+  <button
+    key={item.label}
+    type="button"
+    onClick={() => {
+      setMobileNavOpen(false);
+
+      if (item.path) {
+        navigate(item.path);
+      } else {
+        goToSection(item.section);
+      }
+    }}
+    className={`text-lg py-2 hover:text-red-400 ${
+      item.path && location.pathname === item.path
+        ? "text-red-400 font-semibold"
+        : ""
+    }`}
+  >
+    {item.label}
+  </button>
+))}
 
           <button
             type="button"

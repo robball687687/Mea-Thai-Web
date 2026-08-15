@@ -422,6 +422,99 @@ function HomePage() {
         </div>
       </Section>
 
+      {/* =====================================================
+    JOIN OUR TEAM
+===================================================== */}
+<Section tone="light">
+  <div
+    className="
+      rounded-3xl
+      bg-white/80
+      backdrop-blur-sm
+      shadow-sm
+      border
+      border-gray-100
+      p-7
+      md:p-10
+    "
+  >
+    <div
+      className="
+        md:flex
+        md:items-center
+        md:justify-between
+        gap-8
+      "
+    >
+      <div className="max-w-2xl">
+        <p
+          className="
+            text-sm
+            font-semibold
+            uppercase
+            tracking-[0.18em]
+            text-red-700
+            mb-2
+          "
+        >
+          Careers
+        </p>
+
+        <h2
+          className="
+            text-2xl
+            md:text-3xl
+            font-bold
+            text-gray-900
+            mb-3
+          "
+        >
+          Join Our Team
+        </h2>
+
+        <p
+          className="
+            text-gray-700
+            leading-relaxed
+          "
+        >
+          Love great food, working
+          with people, and being part
+          of a local restaurant team?
+          Check out our current
+          openings and apply online.
+        </p>
+      </div>
+
+      <div
+        className="
+          mt-6
+          md:mt-0
+          shrink-0
+        "
+      >
+        <Link
+          to="/join-our-team"
+          className="
+            inline-block
+            rounded-full
+            bg-red-600
+            text-white
+            font-bold
+            px-7
+            py-3
+            shadow-sm
+            hover:bg-red-700
+            transition
+          "
+        >
+          View Open Positions
+        </Link>
+      </div>
+    </div>
+  </div>
+</Section>
+
       <Section tone="light">
         <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-sm p-6">
           <ContactSection />

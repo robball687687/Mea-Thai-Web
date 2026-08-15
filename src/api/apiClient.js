@@ -1,3 +1,5 @@
+// src/api/apiClient.js
+
 import axios from "axios";
 
 /**
@@ -12,10 +14,7 @@ export const API_ROOT =
  */
 export const api = axios.create({
   baseURL: API_ROOT,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: false, // flip on if you ever use cookies/auth
+  withCredentials: false,
 });
 
 /**
@@ -28,7 +27,7 @@ export const unwrap = (data) => {
 };
 
 /**
- * Optional: global error logging
+ * Global error logging
  */
 api.interceptors.response.use(
   (res) => res,
